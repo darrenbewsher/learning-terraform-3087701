@@ -63,8 +63,7 @@ module "blog_alb" {
   vpc_id             = module.blog_vpc.vpc_id
   subnets            = module.blog_vpc.public_subnets
   security_groups    = [module.blog_sg.security_group_id]
-  target_type = "instance"
-
+  
   listeners = {
     blog-http = {
       port     = 80
@@ -86,6 +85,7 @@ resource "aws_lb_target_group" "blog" {
   port = 80
   protocol = "HTTP"
   vpc_id = module.blog_vpc.vpc_id
+  target_type = "instance"
 }
 
 module "blog_sg" {
