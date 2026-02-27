@@ -63,6 +63,7 @@ module "blog_alb" {
   vpc_id             = module.blog_vpc.vpc_id
   subnets            = module.blog_vpc.public_subnets
   security_groups    = [module.blog_sg.security_group_id]
+  target_type = "instance"
 
   listeners = {
     blog-http = {
@@ -70,13 +71,13 @@ module "blog_alb" {
       protocol = "HTTP"
 
       forward = {
-        target_group_arn = aws_lb_target_group.blog.arn
+        target_group_key = "blog"
       }
     }
   }
 
   tags = {
-    Environment = "var.environment.name"
+    Environment = var.environment.name
   }
 }
 
