@@ -72,7 +72,6 @@ module "blog_alb" {
       default_action = {
         type             = "forward"
         target_group_arn = aws_lb_target_group.blog.arn
-        }
       }
     }
   }
