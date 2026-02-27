@@ -56,21 +56,29 @@ module "blog_alb" {
   source  = "terraform-aws-modules/alb/aws"
   version = "~> 9.0"
 
-  name = "blog-alb"
-
+  name               = "blog-alb"
   load_balancer_type = "application"
 
-  vpc_id             = module.blog_vpc.vpc_id
-  subnets            = module.blog_vpc.public_subnets
-  security_groups    = [module.blog_sg.security_group_id]
-  
+  vpc_id          = module.blog_vpc.vpc_id
+  subnets         = module.blog_vpc.public_subnets
+  security_groups = [module.blog_sg.security_group_id]
+
+  target_groups = {
+    blog = {
+      name_prefix = "blog-"        # avoids name collisions
+      protocol    = "HTTP"
+      port        = 80
+      target_type = "instance"
+    }
+  }
+
   listeners = {
     blog-http = {
       port     = 80
       protocol = "HTTP"
 
       forward = {
-        target_group_arn = aws_lb_target_group.blog.arn
+        target_group_key = "blog"
       }
     }
   }
@@ -78,14 +86,6 @@ module "blog_alb" {
   tags = {
     Environment = var.environment.name
   }
-}
-
-resource "aws_lb_target_group" "blog" {
-  name = "blog"
-  port = 80
-  protocol = "HTTP"
-  vpc_id = module.blog_vpc.vpc_id
-  target_type = "instance"
 }
 
 module "blog_sg" {
