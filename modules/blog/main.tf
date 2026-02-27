@@ -69,6 +69,7 @@ module "blog_alb" {
       protocol    = "HTTP"
       port        = 80
       target_type = "instance"
+      create_attachment = false 
     }
   }
 
@@ -84,7 +85,7 @@ module "blog_alb" {
   }
 
   tags = {
-    Environment = var.environment.name
+    environment = var.environment.name
   }
 }
 
