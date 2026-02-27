@@ -41,7 +41,7 @@ module "blog_autoscaling" {
   vpc_zone_identifier  = module.blog_vpc.public_subnets
   
   traffic_source_attachments = {
-    for i, tg_arn in module.blog_alb.target_group_arns :
+    for i, tg_arn in module.blog_alb.listeners.target_group_arns :
     "tg-${i}" => {
       traffic_source_identifier = tg_arn
       # traffic_source_type defaults to "elbv2"
