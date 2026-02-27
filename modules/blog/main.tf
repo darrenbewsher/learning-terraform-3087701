@@ -34,19 +34,19 @@ module "blog_autoscaling" {
   source  = "terraform-aws-modules/autoscaling/aws"
   version = "~> 9.0"
 
-  name = "blog"
+  name = "${var.environment.name}-blog"
 
   min_size             = var.asg_min
   max_size             = var.asg_max
   vpc_zone_identifier  = module.blog_vpc.public_subnets
   
   traffic_source_attachments = {
-    blog-alb = {
-      traffic_source_identifier = module.blog_alb.target_groups["blog"].arn
+    ${var.environment.name}-blog-alb = {
+      traffic_source_identifier = module.blog_alb.target_groups["${var.environment.name}-blog"].arn
     }
   }
 
-  launch_template_name = "blog"
+  launch_template_name = "${var.environment.name}-blog"
   security_groups      = [module.blog_sg.security_group_id]
   instance_type        = var.instance_type
   image_id             = data.aws_ami.app_ami.id
@@ -56,7 +56,7 @@ module "blog_alb" {
   source  = "terraform-aws-modules/alb/aws"
   version = "~> 9.0"
 
-  name               = "blog-alb"
+  name               = "${var.environment.name}-blog-alb"
   load_balancer_type = "application"
 
   vpc_id          = module.blog_vpc.vpc_id
@@ -64,8 +64,8 @@ module "blog_alb" {
   security_groups = [module.blog_sg.security_group_id]
 
   target_groups = {
-    blog = {
-      name_prefix = "blog-"        # avoids name collisions
+    ${var.environment.name}-blog = {
+      name_prefix = "${var.environment.name}-blog-"        # avoids name collisions
       protocol    = "HTTP"
       port        = 80
       target_type = "instance"
@@ -79,7 +79,7 @@ module "blog_alb" {
       protocol = "HTTP"
 
       forward = {
-        target_group_key = "blog"
+        target_group_key = "${var.environment.name}-blog"
       }
     }
   }
@@ -94,7 +94,7 @@ module "blog_sg" {
   version = "4.13.0"
 
   vpc_id  = module.blog_vpc.vpc_id
-  name    = "blog"
+  name    = "${var.environment.name}-blog"
   ingress_rules = ["https-443-tcp","http-80-tcp"]
   ingress_cidr_blocks = ["0.0.0.0/0"]
   egress_rules = ["all-all"]
