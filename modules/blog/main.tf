@@ -41,7 +41,7 @@ module "blog_autoscaling" {
   vpc_zone_identifier  = module.blog_vpc.public_subnets
   
   traffic_source_attachments = {
-    ${var.environment.name}-blog-alb = {
+    "${var.environment.name}-blog-alb" = {
       traffic_source_identifier = module.blog_alb.target_groups["${var.environment.name}-blog"].arn
     }
   }
@@ -64,7 +64,7 @@ module "blog_alb" {
   security_groups = [module.blog_sg.security_group_id]
 
   target_groups = {
-    ${var.environment.name}-blog = {
+    "${var.environment.name}-blog" = {
       name_prefix = "${var.environment.name}-blog-"        # avoids name collisions
       protocol    = "HTTP"
       port        = 80
