@@ -65,7 +65,7 @@ module "blog_alb" {
 
   target_groups = {
     "${var.environment.name}-blog" = {
-      name_prefix = "${var.environment.name}-blog-"        # avoids name collisions
+      name_prefix = "blog-"        # avoids name collisions
       protocol    = "HTTP"
       port        = 80
       target_type = "instance"
