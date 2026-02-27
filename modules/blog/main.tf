@@ -68,8 +68,11 @@ module "blog_alb" {
     blog-http = {
       port               = 80
       protocol           = "HTTP"
-      forward = {
+      
+      default_action = {
+        type             = "forward"
         target_group_arn = aws_lb_target_group.blog.arn
+        }
       }
     }
   }
